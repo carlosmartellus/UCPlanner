@@ -3,6 +3,6 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 
 Base = declarative_base()
 
-engine = create_engine("sqlite:///ucplanner.db", echo=True)
+engine = create_engine('sqlite:///ucplanner.db', echo=True)
 
 SessionLocal = sessionmaker(bind=engine)

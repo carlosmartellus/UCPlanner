@@ -47,7 +47,7 @@ def get_course_by(
     if code is not None:
         query = query.filter(Course.code == code)
     if name is not None:
-        query = query.filter(Course.name.ilike(f"%{name}%"))
+        query = query.filter(Course.name.ilike(f'%{name}%'))
     if nrc is not None:
         query = query.filter(Course.nrc == nrc)
     if credits is not None:
