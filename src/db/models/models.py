@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Table, Float, Boolean
 from sqlalchemy.orm import relationship
-from .db import Base
+from ..base import Base
 
 # Association Tables
 user_course_history = Table(
