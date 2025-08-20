@@ -11,8 +11,3 @@ class Course(Base):
     nrc = Column(Integer, unique=True)
     credits = Column(Integer, unique=False)
     area = Column(String, unique=False, nullable=True)
-
-    category_id = Column(Integer, ForeignKey("categories.id"))
-    category = relationship("Category", back_populates="courses")
-
-    curriculum_entries = relationship("Curriculum", back_populates="course")
