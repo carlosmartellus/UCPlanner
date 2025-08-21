@@ -9,6 +9,7 @@ setup(
     install_requires=[
         "PySide6>=6.9.1",
         "SQLAlchemy>=2.0",
+        "pytest>=8.4.1"
     ],
     python_requires=">=3.10",
     entry_points={
