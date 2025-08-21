@@ -1,12 +1,14 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import insert, delete, update, select
-from PySide6.QtCore import QObject
+from PySide6.QtCore import QObject, Signal
 from sqlalchemy.exc import IntegrityError
+from db.models.degree import Degree
 
 from db.models.associations import user_degrees, current_user_course, user_course_history
 
 
 class AssociationMainController(QObject):
+    signal_get_degrees_for_user = Signal(list)
     def __init__(self, session: Session):
         super().__init__()
         self.session = session
@@ -35,7 +37,7 @@ class AssociationMainController(QObject):
     def get_degrees_for_user(self, user_id: int):
         stmt = select(user_degrees.c.degree_id).where(user_degrees.c.user_id == user_id)
         result = self.session.execute(stmt).scalars().all()
-        return result
+        self.signal_get_degrees_for_user.emit(result)
 
     # =========================
     # USER <-> CURRENT COURSES
@@ -58,10 +60,16 @@ class AssociationMainController(QObject):
         self.session.commit()
         return result.rowcount > 0
 
-    def get_current_courses_for_user(self, user_id: int):
-        stmt = select(current_user_course.c.course_id).where(current_user_course.c.user_id == user_id)
-        result = self.session.execute(stmt).scalars().all()
-        return result
+    def get_degrees_for_user(self, user_id: int):
+        stmt = (
+            select(Degree.id, Degree.name, Degree.school, Degree.total_credits)
+            .join(user_degrees, Degree.id == user_degrees.c.degree_id)
+            .where(user_degrees.c.user_id == user_id)
+        )
+        result = self.session.execute(stmt).all()
+        degrees = [dict(row._mapping) for row in result]
+        self.signal_get_degrees_for_user.emit(degrees)
+
 
     # =========================
     # USER <-> COURSE HISTORY

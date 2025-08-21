@@ -5,6 +5,7 @@ from views.menu import MenuWindow
 from views.register import RegisterWindow
 from views.login import LoginWindow
 from views.degree import DegreeWindow
+from views.curriculum import Curriculum
 from db.controllers.user_controller import UserMainController
 from db.controllers.degree_controller import DegreeMainController
 from db.controllers.association_controller import AssociationMainController
@@ -26,13 +27,14 @@ class PlannerApp(QMainWindow):
         self.menu_page = MenuWindow()
         self.register_page = RegisterWindow()
         self.login_page = LoginWindow()
-        self.degree_page = DegreeWindow(user={'user_name': '', 'user_id': 0})
+        self.degree_page = DegreeWindow(user={'name': '', 'id': 0})
+        self.curriculum_page = Curriculum(degree={})
 
         self.user_controller = UserMainController(self.session)
         self.degree_controller = DegreeMainController(self.session)
         self.associations_controller = AssociationMainController(self.session)
 
-        for page in [self.menu_page, self.register_page, self.login_page, self.degree_page]:
+        for page in [self.menu_page, self.register_page, self.login_page, self.degree_page, self.curriculum_page]:
             self.stack.addWidget(page)
 
         # Connections Menu Page
@@ -54,6 +56,8 @@ class PlannerApp(QMainWindow):
         self.degree_page.signal_create_new_degree.connect(self.degree_controller.create_degree)
         self.degree_page.signal_get_degrees.connect(self.degree_controller.get_all_degrees)
         self.degree_page.signal_add_user_degree.connect(self.associations_controller.add_user_degree)
+        self.degree_page.signal_get_degrees.connect(self.associations_controller.get_degrees_for_user)
+        self.degree_page.signal_open_curriculum.connect(self.show_curriculum)
 
         # Connections User Controller
         self.user_controller.signal_send_users.connect(self.login_page.get_users)
@@ -62,6 +66,9 @@ class PlannerApp(QMainWindow):
         # Connections Degree Controller
         self.degree_controller.signal_send_degree.connect(self.degree_page.add_user_degree)
 
+        # Connections Association Controller
+        self.associations_controller.signal_get_degrees_for_user.connect(self.degree_page.get_degrees)
+        
 
         self.stack.setCurrentWidget(self.menu_page)
 
@@ -76,8 +83,11 @@ class PlannerApp(QMainWindow):
         self.stack.setCurrentWidget(self.login_page)
 
     def show_degree(self, user: dict[str, int]):
+        print('[DEBUG] View for user ', user)
         self.degree_page.user = user
-        self.degree_page.signal_get_degrees.emit()
+        self.degree_page.signal_get_degrees.emit(user['id'])
         self.stack.setCurrentWidget(self.degree_page)
     
-
+    def show_curriculum(self):
+        self.showMaximized()
+        self.stack.setCurrentWidget(self.curriculum_page)

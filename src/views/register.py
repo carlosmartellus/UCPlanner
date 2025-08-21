@@ -47,5 +47,6 @@ class RegisterWindow(QWidget):
         if 'error' in data:
             self.top_label.setText(data['error'])
         else:
-            self.signal_open_degrees.emit({data['name'], data['id']})
+            print(f'[DEBUG] Registering user\n\tname: {data['name']}, id: {data['id']}')
+            self.signal_open_degrees.emit(data)
 

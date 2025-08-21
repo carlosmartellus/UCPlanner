@@ -6,9 +6,10 @@ from PySide6.QtCore import Signal, Qt
 
 class DegreeWindow(QWidget):
     signal_back_to_menu = Signal()
-    signal_get_degrees = Signal()
+    signal_get_degrees = Signal(int)
     signal_create_new_degree = Signal(str, str, int)
     signal_add_user_degree = Signal(int, int)
+    signal_open_curriculum = Signal(dict, dict) # User, Degree
 
     def __init__(self, user: dict):
         super().__init__()
@@ -16,10 +17,12 @@ class DegreeWindow(QWidget):
         self.setWindowTitle('Carreras')
         self.resize(500, 500)
 
+        print('[DEBUG] View for user ', user)
+
         self.main_layout = QVBoxLayout(self)
         self.setLayout(self.main_layout)
 
-        self.main_layout.addWidget(QLabel(f'Carreras registradas para el usuario {self.user['user_name']}:' ))
+        self.main_layout.addWidget(QLabel(f'Carreras registradas para el usuario {self.user['name']}:' ))
 
         self.scroll_area = QScrollArea()
         self.scroll_area.setWidgetResizable(True)
@@ -51,6 +54,25 @@ class DegreeWindow(QWidget):
 
         self.degree_buttons = {}
 
+    def get_degrees(self, degrees: list[dict]):
+        for i in reversed(range(self.degree_container_layout.count())):
+            widget = self.degree_container_layout.itemAt(i).widget()
+            if widget:
+                widget.setParent(None)
+
+        self.degree_buttons.clear()
+
+        for degree in degrees:
+            btn = QPushButton(degree['name'])
+            self.degree_container_layout.addWidget(btn)
+            self.degree_buttons[degree['id']] = btn
+
+            btn.clicked.connect(
+                lambda checked, d=degree: self.add_user_degree(d)
+            )
+
+        self.degree_container_layout.addStretch(1)
+
 
     def create_new_degree(self):
         name = self.name_input.text().strip()
@@ -64,4 +86,5 @@ class DegreeWindow(QWidget):
     
     def add_user_degree(self, degree: dict):
         print(f'[DEBUG] Adding {self.user} to {degree}')
-        self.signal_add_user_degree.emit(degree['id'], self.user['id'])
+        self.signal_add_user_degree.emit(self.user['id'], degree['id'])
+        self.signal_open_curriculum.emit(self.user, degree)
