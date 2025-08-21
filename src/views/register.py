@@ -1,58 +1,42 @@
-from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLineEdit, QPushButton, QLabel, QApplication
-from PySide6.QtCore import Signal, Qt
-from sys import exit
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QPushButton, QLabel
+from PySide6.QtCore import Signal
+from re import fullmatch
 
-class MainWindow(QMainWindow):
+class RegisterWindow(QWidget):
     signal_send_name = Signal(str)
+    signal_back_to_menu = Signal()
 
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Register")
-        self.resize(600, 600)
-        self.center()
+        self.setWindowTitle('Registro')
 
-        main_widget = QWidget()
-        self.setCentralWidget(main_widget)
-        main_layout = QVBoxLayout(main_widget)
+        layout = QVBoxLayout(self)
+        self.setLayout(layout)
 
-        self.label_welcome = QLabel(
-            "Bienvenido a PlannerUC.\nPor favor ingresa tu nombre para referirnos a ti correctamente.\n"
-            "Recuerda que este Planner es no oficial, por lo que el PPA o los créditos que aparecen pueden "
-            "no ser los que aparecen en PortalUC."
-        )
-        self.label_welcome.setWordWrap(True)
+        self.top_label = QLabel('Cualquier información entregada no será publicada')
+        layout.addWidget(self.top_label)
 
-        self.label_welcome.setAlignment(Qt.AlignCenter)
-
-        self.user_name = QLineEdit()
-        self.user_name.setPlaceholderText("Ingrese su nombre")
+        self.input_name = QLineEdit()
+        self.input_name.setPlaceholderText('Ingrese su nombre')
+        layout.addWidget(self.input_name)
 
         btn_send = QPushButton('Enviar')
-        btn_send.clicked.connect(self.send_name)
+        btn_send.clicked.connect(self.on_send)
+        layout.addWidget(btn_send)
 
-        btn_close = QPushButton('Salir')
-        btn_close.clicked.connect(self.close_window)
+        btn_back = QPushButton('Volver al menú')
+        btn_back.clicked.connect(lambda: self.signal_back_to_menu.emit())
+        layout.addWidget(btn_back)
 
-        main_layout.addWidget(self.label_welcome)
-        main_layout.addWidget(self.user_name)
-        main_layout.addWidget(btn_send)
-        main_layout.addWidget(btn_close)
-
-    def center(self):
-        screen_geometry = QApplication.primaryScreen().availableGeometry()
-        window_geometry = self.frameGeometry()
-        x = (screen_geometry.width() - window_geometry.width()) // 2
-        y = (screen_geometry.height() - window_geometry.height()) // 2
-        self.move(x, y)
-
-    def send_name(self):
-        name = self.user_name.text().strip()
+    def on_send(self):
+        name = self.input_name.text().strip()
         if name:
-            self.signal_send_name.emit(name)
+            if fullmatch(r'[A-Za-z0-9_\- ]+', name):
+                self.signal_send_name.emit(name)
+                self.top_label.setText('')
+            else:
+                self.top_label.setText(
+                    'Nombre inválido: solo se permiten letras, números, guiones y guiones bajos'
+                )
         else:
-            self.label_welcome.setText(
-                "No se puede ingresar un nombre vacío"
-            )
-
-    def close_window(self):
-        exit()
+            self.top_label.setText('No se puede ingresar un nombre en blanco')

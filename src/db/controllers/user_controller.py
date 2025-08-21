@@ -5,7 +5,7 @@ from PySide6.QtCore import Signal, QObject
 
 class UserMainController(QObject):
     signal_send_user = Signal(dict)
-    signal_send_users = Signal(list[dict])
+    signal_send_users = Signal(list)
     def __init__(self, session: Session):
         self.session = session
         super().__init__()
