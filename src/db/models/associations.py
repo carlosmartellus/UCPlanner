@@ -14,3 +14,9 @@ current_user_course = Table(
     Column('user_id', Integer, ForeignKey('users.id')),
     Column('course_id', Integer, ForeignKey('courses.id'))
 )
+
+user_degrees = Table(
+    'user_degrees', Base.metadata,
+    Column('user_id', Integer, ForeignKey('users.id')),
+    Column('degree_id', Integer, ForeignKey('degrees.id'))
+)

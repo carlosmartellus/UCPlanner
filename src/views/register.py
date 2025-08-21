@@ -5,6 +5,8 @@ from re import fullmatch
 class RegisterWindow(QWidget):
     signal_send_name = Signal(str)
     signal_back_to_menu = Signal()
+    signal_open_degrees = Signal(dict)
+
 
     def __init__(self):
         super().__init__()
@@ -33,10 +35,17 @@ class RegisterWindow(QWidget):
         if name:
             if fullmatch(r'[A-Za-z0-9_\- ]+', name):
                 self.signal_send_name.emit(name)
-                self.top_label.setText('')
+
             else:
                 self.top_label.setText(
                     'Nombre inválido: solo se permiten letras, números, guiones y guiones bajos'
                 )
         else:
             self.top_label.setText('No se puede ingresar un nombre en blanco')
+    
+    def handle_user_signal(self, data):
+        if 'error' in data:
+            self.top_label.setText(data['error'])
+        else:
+            self.signal_open_degrees.emit(data['name'], data['id'])
+

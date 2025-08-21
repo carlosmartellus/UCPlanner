@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, Float
 from sqlalchemy.orm import relationship
 from ..base import Base
+from .associations import user_degrees
 
 class Degree(Base):
     __tablename__ = 'degrees'
@@ -11,3 +12,4 @@ class Degree(Base):
     total_credits = Column(Integer, nullable=False)
 
     curriculum_entries = relationship('Curriculum', back_populates='degree')
+    students = relationship('User', secondary=user_degrees, back_populates='degrees')

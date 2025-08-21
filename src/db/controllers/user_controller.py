@@ -2,6 +2,8 @@ from sqlalchemy.orm import Session
 from db.models.user import User
 from db.models.course import Course
 from PySide6.QtCore import Signal, QObject
+from sqlalchemy.exc import IntegrityError
+
 
 class UserMainController(QObject):
     signal_send_user = Signal(dict)
@@ -13,9 +15,14 @@ class UserMainController(QObject):
     def create_user(self, name: str):
         user = User(name=name)
         self.session.add(user)
-        self.session.commit()
-        self.session.refresh(user)
-        self.signal_send_user.emit(self.user_dict(user))
+        try:
+            self.session.commit()
+            self.session.refresh(user)
+            self.signal_send_user.emit(self.user_dict(user))
+        except IntegrityError:
+            self.session.rollback()
+            self.signal_send_user.emit({'error': f'El nombre {name} ya existe'})
+
 
 
     def get_all_users(self):
@@ -23,6 +30,8 @@ class UserMainController(QObject):
         result = []
         for user in users:
             result.append(self.user_dict(user))
+        
+        print('[DEBUG] Result from get_all_users function: ', result)
         self.signal_send_users.emit(result)
 
     def get_user_by_id(self, user_id: int):
@@ -95,6 +104,6 @@ class UserMainController(QObject):
 
     def user_dict(self, user: User) -> dict:
         return {
-            "id": user.id,
-            "name": user.name
+            'id': user.id,
+            'name': user.name
         }
