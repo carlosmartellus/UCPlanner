@@ -9,6 +9,5 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
 
-    # relaciones con tablas de asociación
     course_history = relationship('Course', secondary=user_course_history)
     current_courses = relationship('Course', secondary=current_user_course)
