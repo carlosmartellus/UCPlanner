@@ -15,4 +15,4 @@ It is made in base of Pontificia Universidad Católica de Chile 's system so thi
 Since university has not provided a database, in this version courses must be registered manually.
 
 ## Issues
-Feel free to publish any issue in https://github.com/carlosmartellus/UCPlanner.git
+Feel free to publish any issue in https://github.com/carlosmartellus/UCPlanner/issues
