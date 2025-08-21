@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 from ..base import Base
-from ..associations import user_course_history, current_user_course
+from .associations import user_course_history, current_user_course
 
 class User(Base):
     __tablename__ = 'users'

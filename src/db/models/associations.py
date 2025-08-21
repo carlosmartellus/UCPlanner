@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, ForeignKey, Table, Float, Boolean
-from .base import Base
+from ..base import Base
 
 user_course_history = Table(
     'user_course_history', Base.metadata,
