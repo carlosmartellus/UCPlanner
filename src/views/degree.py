@@ -8,6 +8,7 @@ class DegreeWindow(QWidget):
     signal_back_to_menu = Signal()
     signal_get_degrees = Signal()
     signal_create_new_degree = Signal(str, str, int)
+    signal_add_user_degree = Signal(int, int)
 
     def __init__(self, user: dict):
         super().__init__()
@@ -50,19 +51,6 @@ class DegreeWindow(QWidget):
 
         self.degree_buttons = {}
 
-    def set_degrees(self, degrees: list[dict]):
-        for i in reversed(range(self.degree_container_layout.count())):
-            widget = self.degree_container_layout.itemAt(i).widget()
-            if widget:
-                widget.setParent(None)
-
-        self.degree_buttons.clear()
-
-        for degree in degrees:
-            btn = QPushButton(degree['name'])
-            btn.degree_id = degree['id']
-            self.degree_container_layout.addWidget(btn)
-            self.degree_buttons[degree['id']] = btn
 
     def create_new_degree(self):
         name = self.name_input.text().strip()
@@ -73,3 +61,7 @@ class DegreeWindow(QWidget):
             self.signal_create_new_degree.emit(name, school, int(credits))
         else:
             print('Todos los campos son obligatorios')
+    
+    def add_user_degree(self, degree: dict):
+        print(f'[DEBUG] Adding {self.user} to {degree}')
+        self.signal_add_user_degree.emit(degree['id'], self.user['id'])

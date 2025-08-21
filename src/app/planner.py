@@ -7,6 +7,7 @@ from views.login import LoginWindow
 from views.degree import DegreeWindow
 from db.controllers.user_controller import UserMainController
 from db.controllers.degree_controller import DegreeMainController
+from db.controllers.association_controller import AssociationMainController
 from src.utils.center import center
 
 class PlannerApp(QMainWindow):
@@ -29,6 +30,7 @@ class PlannerApp(QMainWindow):
 
         self.user_controller = UserMainController(self.session)
         self.degree_controller = DegreeMainController(self.session)
+        self.associations_controller = AssociationMainController(self.session)
 
         for page in [self.menu_page, self.register_page, self.login_page, self.degree_page]:
             self.stack.addWidget(page)
@@ -47,13 +49,18 @@ class PlannerApp(QMainWindow):
         self.login_page.signal_get_users.connect(self.user_controller.get_all_users)
         self.login_page.signal_open_degrees.connect(self.show_degree)
 
+        # Connections Degree Page
+        self.degree_page.signal_back_to_menu.connect(self.show_menu)
+        self.degree_page.signal_create_new_degree.connect(self.degree_controller.create_degree)
+        self.degree_page.signal_get_degrees.connect(self.degree_controller.get_all_degrees)
+        self.degree_page.signal_add_user_degree.connect(self.associations_controller.add_user_degree)
+
         # Connections User Controller
         self.user_controller.signal_send_users.connect(self.login_page.get_users)
         self.user_controller.signal_send_user.connect(self.register_page.handle_user_signal)
 
-        # Connections Degree Page
-        self.degree_page.signal_back_to_menu.connect(self.show_menu)
-        self.degree_page.signal_create_new_degree.connect(self.degree_controller.create_degree)
+        # Connections Degree Controller
+        self.degree_controller.signal_send_degree.connect(self.degree_page.add_user_degree)
 
 
         self.stack.setCurrentWidget(self.menu_page)
@@ -70,5 +77,7 @@ class PlannerApp(QMainWindow):
 
     def show_degree(self, user: dict[str, int]):
         self.degree_page.user = user
+        self.degree_page.signal_get_degrees.emit()
         self.stack.setCurrentWidget(self.degree_page)
+    
 

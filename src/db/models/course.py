@@ -12,4 +12,4 @@ class Course(Base):
     credits = Column(Integer)
     area = Column(String, nullable=True)
 
-    curriculum_entries = relationship("Curriculum", back_populates="course")
+    curriculum_entries = relationship('Curriculum', back_populates='course')
