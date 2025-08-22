@@ -22,7 +22,7 @@ class DegreeWindow(QWidget):
         self.main_layout = QVBoxLayout(self)
         self.setLayout(self.main_layout)
 
-        self.main_layout.addWidget(QLabel(f'Carreras registradas para el usuario {self.user['name']}:' ))
+        self.main_layout.addWidget(QLabel(f"Carreras registradas para el usuario {self.user['name']}:" ))
 
         self.scroll_area = QScrollArea()
         self.scroll_area.setWidgetResizable(True)
