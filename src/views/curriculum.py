@@ -22,8 +22,9 @@ class Curriculum(QWidget):
         self.main_layout = QVBoxLayout(self)
         self.setLayout(self.main_layout)
 
-        layout_courses = QHBoxLayout()
+        characters = ['Mínimo', 'Optativo']
 
+        layout_courses = QHBoxLayout()
         layout_create_courses = QVBoxLayout()
 
         course_code = QLineEdit()
@@ -41,13 +42,17 @@ class Curriculum(QWidget):
         course_area = QLineEdit()
         course_area.setPlaceholderText('Área de OFG (Nulo si no es OFG)')
 
+        course_character = QLineEdit()
+        course_character.setPlaceholderText('Carácter (Mínimo, Optativo, etc.)')
+
         layout_create_courses.addWidget(course_code)
         layout_create_courses.addWidget(course_name)
         layout_create_courses.addWidget(course_nrc)
         layout_create_courses.addWidget(course_credits)
         layout_create_courses.addWidget(course_area)
+        
 
-        self.btn_create_course = QPushButton('Crear Curso')
+        self.btn_create_course = QPushButton('Agregar Curso')
         layout_create_courses.addWidget(self.btn_create_course)
 
         self.container_courses = QWidget()
