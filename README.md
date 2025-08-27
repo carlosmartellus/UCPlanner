@@ -1,18 +1,32 @@
 # UCPlanner
 
-## Version
-**0.0.1**
+UCPlanner is a desktop application designed to help students organize and track their academic plans at Pontificia Universidad Católica de Chile (PUC).
 
-## Libraries
-- `setuptools`: tested with version `80.9.0` (should work with `>=64`).
-- `PySide6`: tested with version `6.9.1`, might or might not work with other versions.
-- `SQLAlchemy`: tested with version `2.0.43`, might or might not work with other versions.
-- `pytest`: Optional but useful for testing. Tested with version `8.4.1`
+It provides a simple interface to manually register courses, visualize progress, and manage curricula according to the university’s structure.
 
-## Considerations
-It is made in base of Pontificia Universidad Católica de Chile 's system so this won't work as Canvas or other typical planner. If you want to use this code for your own planner, modify `db/models` and `db/controllers`
+⚠️ Note: This project is specifically tailored for PUC’s system. It does not work as a generic planner (e.g., Canvas). If you want to adapt it for another institution, you will need to update the models in db/models and db/controllers.
 
-Since university has not provided a database, in this version courses must be registered manually.
+## Installation
 
-## Issues
-Feel free to publish any issue in https://github.com/carlosmartellus/UCPlanner/issues
+1. Clone the repository:
+
+    `git clone https://github.com/carlosmartellus/UCPlanner.git`
+
+    `cd UCPlanner`
+
+2. Install dependencies:
+
+    `pip install -r requirements.txt`
+
+3. Generate database migrations:
+
+    `alembic -c backend/src/db/alembic.ini revision --autogenerate -m "Description"`
+
+    `alembic -c backend/src/db/alembic.ini upgrade head`
+
+4. Run backend:
+
+    `python -m backend.src.main`
+
+## Backend Notes
+- Backend is written in `Python 3.12+`, using `SQLAlchemy` for ORM and `Alembic` for migrations

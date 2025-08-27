@@ -1,0 +1,28 @@
+from sqlalchemy import Column, Integer, ForeignKey, Table, Float, Boolean
+from ..base import Base
+
+user_course_history = Table(
+    'user_course_history', Base.metadata,
+    Column('user_id', Integer, ForeignKey('users.id')),
+    Column('course_id', Integer, ForeignKey('courses.id')),
+    Column('grade', Float),
+    Column('passed', Boolean)
+)
+
+current_user_course = Table(
+    'current_user_course', Base.metadata,
+    Column('user_id', Integer, ForeignKey('users.id')),
+    Column('course_id', Integer, ForeignKey('courses.id'))
+)
+
+user_degrees = Table(
+    'user_degrees', Base.metadata,
+    Column('user_id', Integer, ForeignKey('users.id')),
+    Column('degree_id', Integer, ForeignKey('degrees.id'))
+)
+
+curriculum_courses = Table(
+    'curriculum_courses', Base.metadata,
+    Column('curriculum_id', Integer, ForeignKey('curriculums.id'), primary_key=True),
+    Column('course_id', Integer, ForeignKey('courses.id'), primary_key=True)
+)
