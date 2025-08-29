@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import MenuButton from './MenuButton'
 
-export default function UsersList({ setUser, setView }) {
+export default function UsersList({ setUser, setView, setAppView }) {
   const [usersList, setUsersList] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -44,7 +44,7 @@ export default function UsersList({ setUser, setView }) {
             onClick={() => {
               console.log('Usuario clickeado', u.name)
               setUser(u)
-              setView('user')
+              setAppView('user')             
             }}
           >
             {u.name}

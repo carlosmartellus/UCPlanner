@@ -1,60 +1,36 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import './App.css'
-import Menu from './menu/Menu'
-import RegisterForm from './menu/RegisterForm'
-import UsersList from './menu/UsersList'
-import Settings from './menu/Settings'
+import Home from './views/home/Home'
+import User from './views/user/User'
 
 function App() {
-  const [view, setView] = useState('home')
+  const [appView, setAppView] = useState('home')
   const [user, setUser] = useState(null)
-  const [nameInput, setNameInput] = useState('')
-
-  useEffect(() => {
-    if (view === 'login') {
-      fetch('http://127.0.0.1:8000/users/')
-        .then((res) => res.json())
-        .then((data) => setUsersList(data))
-        .catch((err) => console.error('Error cargando usuarios:', err))
-    }
-  }, [view])
-
-  const handleLogout = () => {
-    setUser(null)
-    setView('home')
-  }
+  const [degreeNameInput, setDegreeNameInput] = useState('')
+  const [schoolInput, setSchoolInput] = useState('')
+  const [creditInput, setCreditInput] = useState('')
 
   return (
     <div className="App">
-      <h1>Bienvenid@ a UCPlanner!</h1>
-
-      {view === 'home' && (
-        <Menu
-          setView={setView}
+      {appView === 'home' && (
+        <Home 
           user={user}
-          handleLogout={handleLogout}
-        />
-      )}
-
-      {view === 'register' && (
-        <RegisterForm
-          nameInput={nameInput}
-          setNameInput={setNameInput}
-          setView={setView}
           setUser={setUser}
+          setAppView={setAppView}
         />
       )}
 
-      {view === 'login' && (
-        <UsersList
-        setUser={setUser}
-        setView={setView}
+      {appView === 'user' && (
+        <User
+          user={user}
+          degreeNameInput={degreeNameInput}
+          setDegreeNameInput={setDegreeNameInput}
+          schoolInput={schoolInput}
+          setSchoolInput={setSchoolInput}
+          creditInput={creditInput}
+          setCreditInput={setCreditInput}
         />
       )}
-
-      {view === 'settings' && <Settings setView={setView} />}
-
-      {user && <p>Hola, {user.name}</p>}
     </div>
   )
 }

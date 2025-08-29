@@ -1,8 +1,10 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
-from .routes import user_routes
+from .routes import user_routes, degree_routes, user_degree_routes
 from .db.base import Base, engine, SessionLocal
 from .controllers.user_controller import UserMainController
+from .controllers.degree_controller import DegreeMainController
+from .controllers.user_degrees_controller import UserDegreesController
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -26,7 +28,8 @@ app.add_middleware(
 )
 
 app.include_router(user_routes.router)
-
+app.include_router(degree_routes.router)
+app.include_router(user_degree_routes.router)
 
 def get_db():
     db = SessionLocal()

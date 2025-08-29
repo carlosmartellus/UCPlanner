@@ -1,6 +1,6 @@
 import MenuButton from './MenuButton'
 
-export default function RegisterForm({ nameInput, setNameInput, setView, setUser }) {
+export default function RegisterForm({ nameInput, setNameInput, setView, setUser, setAppView }) {
   const handleRegisterSubmit = async () => {
     if (!nameInput.trim()) {
       console.log('Cannot send empty name')
@@ -26,7 +26,7 @@ export default function RegisterForm({ nameInput, setNameInput, setView, setUser
     const newUser = await res.json()
     setUser(newUser)
     setNameInput('')
-    setView('home')
+    setAppView('user')
   }
 
   return (

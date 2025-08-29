@@ -8,4 +8,10 @@ class User(Base, SerializableMixin):
 
     id = Column(Integer, primary_key=True)
     name = Column(String, unique=True)
+
+    degrees = relationship(
+        "Degree",
+        secondary="user_degrees",
+        back_populates="users"
+    )
     

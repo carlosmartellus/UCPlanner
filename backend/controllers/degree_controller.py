@@ -1,73 +1,28 @@
-from PySide6.QtCore import QObject, Signal
 from sqlalchemy.orm import Session
-from db.models.degree import Degree
-from sqlalchemy.exc import IntegrityError
+from ..db.models.degree import Degree
 
-class DegreeMainController(QObject):
-    signal_send_degree = Signal(object)
-    signal_send_degrees = Signal(list)
-    signal_error = Signal(str)
-
-    def __init__(self, session: Session):
-        super().__init__()
-        self.session = session
-
-    def create_degree(self, name: str, school: str, total_credits: int):
-        degree = Degree(name=name, school=school, total_credits=total_credits)
-        self.session.add(degree)
-        try:
-            self.session.commit()
-            self.session.refresh(degree)
-            data = {"degree_id": degree.to_dict()["id"]}
-            print('[DEBUG Degree Controller] Degree created: ', degree.to_dict())
-            print('[DEBUG Degree Controller] data emited ->', data)
-            self.signal_send_degree.emit(data)
-        except IntegrityError:
-            self.session.rollback()
-            self.signal_error.emit(f'Carrera {name} ya existe')
+class DegreeMainController:
+    def __init__(self, db: Session):
+        self.db = db
 
     def get_all_degrees(self):
-        degrees = self.session.query(Degree).all()
-        result = []
-        for degree in degrees:
-            result.append(degree.to_dict())
-        print('[DEBUG Degree Controller] Degrees got: ', result)
-        self.signal_send_degrees.emit(result)
+        return self.db.query(Degree).all()
 
     def get_degree_by_id(self, degree_id: int):
-        degree = self.session.query(Degree).filter(Degree.id == degree_id).first()
-        if degree:
-            self.signal_send_degree.emit(degree.to_dict())
-            return degree.to_dict()
+        return self.db.query(Degree).filter(Degree.id == degree_id).first()
 
+    def create_degree(self, name: str, school: str, total_credits: int):
+        print(f'Data received: {name, school, total_credits}')
+        existing = self.db.query(Degree).filter(Degree.name == name).first()
+        if existing:
+            return None
 
-    def update_degree(self, degree_id: int, name: str = None, school: str = None, total_credits: int = None):
-        degree = self.session.query(Degree).filter(Degree.id == degree_id).first()
-        if not degree:
-            self.signal_error.emit(f'Degree con ID {degree_id} no encontrado')
-            return
-        
-        if name is not None:
-            degree.name = name
-        if school is not None:
-            degree.school = school
-        if total_credits is not None:
-            degree.total_credits = total_credits
-        
-        try:
-            self.session.commit()
-            self.session.refresh(degree)
-            self.signal_send_degree.emit(degree.to_dict())
-        except IntegrityError:
-            self.session.rollback()
-            self.signal_error.emit(f'El grado {name} ya existe')
-
-    def delete_degree(self, degree_id: int):
-        degree = self.session.query(Degree).filter(Degree.id == degree_id).first()
-        if not degree:
-            self.signal_error.emit(f'Degree con ID {degree_id} no encontrado')
-            return
-        
-        self.session.delete(degree)
-        self.session.commit()
-        self.signal_send_degree.emit(degree.to_dict())
+        new_degree = Degree(
+            name=name,
+            school=school,
+            total_credits=total_credits
+        )
+        self.db.add(new_degree)
+        self.db.commit()
+        self.db.refresh(new_degree)
+        return new_degree

@@ -6,8 +6,8 @@ from alembic import context
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from db.base import Base, engine
-from db.models import *
+from base import Base, engine
+from models import *
 
 config = context.config
 if config.config_file_name is not None:
