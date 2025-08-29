@@ -48,6 +48,14 @@ It provides a simple interface to manually register courses, visualize progress,
 
     - ⚠️ If you're using a newer Python version (like 3.13), you may encounter errors when installing pydantic. Please stick to Python 3.12.3 for now.
 
+## Frontend Notes
+- The frontend uses Vite, React and Tauri
+- For Desktop application:
+```bash 
+cd UCPlanner/frontend/src-tauri
+cargo tauri dev
+```
+
 ## Updating Data Base
 If a modification is needed, follow these steps:
 1. Modify SQLAlchemy models in backend/db/models
