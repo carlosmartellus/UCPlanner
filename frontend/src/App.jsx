@@ -1,81 +1,60 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
+import Menu from './menu/Menu'
+import RegisterForm from './menu/RegisterForm'
+import UsersList from './menu/UsersList'
+import Settings from './menu/Settings'
 
 function App() {
+  const [view, setView] = useState('home')
   const [user, setUser] = useState(null)
-  const [isRegistering, setIsRegistering] = useState(false)
   const [nameInput, setNameInput] = useState('')
 
-  const handleRegisterClick = () => {
-    setIsRegistering(true)
-  }
-
-  const handleRegisterSubmit = async () => {
-    if (nameInput.trim() === '') return
-    try {
-      const response = await fetch("http://localhost:8000/users/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name: nameInput }),
-      })
-
-      if (!response.ok) {
-        throw new Error("Error al registrar usuario")
-      }
-
-      const data = await response.json()
-      console.log(data)
-
-      setUser({ name: data.name })
-      setIsRegistering(false)
-      setNameInput('')
-    } catch (error) {
-      console.error(error)
-      alert("No se pudo registrar el usuario")
+  useEffect(() => {
+    if (view === 'login') {
+      fetch('http://127.0.0.1:8000/users/')
+        .then((res) => res.json())
+        .then((data) => setUsersList(data))
+        .catch((err) => console.error('Error cargando usuarios:', err))
     }
-  }
-
-
-  const handleLogin = () => {
-    console.log('Login seleccionado')
-    setUser({ name: 'UsuarioEjemplo' })
-  }
-
-  const handleSettings = () => {
-    console.log('Configuración seleccionada')
-  }
+  }, [view])
 
   const handleLogout = () => {
-    console.log('Salir seleccionado')
     setUser(null)
+    setView('home')
   }
 
   return (
     <div className="App">
       <h1>Bienvenid@ a UCPlanner!</h1>
 
-      {user && <p>Hola, {user.name}</p>}
-
-      <div className="menu">
-        <button onClick={handleRegisterClick}>Registrarse</button>
-        <button onClick={handleLogin}>Login</button>
-        <button onClick={handleSettings}>Configuración</button>
-        <button onClick={handleLogout}>Salir</button>
-      </div>
-
-      {isRegistering && (
-        <div className="register-form">
-          <input
-            type="text"
-            placeholder="Ingresa tu nombre"
-            value={nameInput}
-            onChange={(e) => setNameInput(e.target.value)}
-          />
-          <button onClick={handleRegisterSubmit}>Enviar</button>
-        </div>
+      {view === 'home' && (
+        <Menu
+          setView={setView}
+          user={user}
+          handleLogout={handleLogout}
+        />
       )}
+
+      {view === 'register' && (
+        <RegisterForm
+          nameInput={nameInput}
+          setNameInput={setNameInput}
+          setView={setView}
+          setUser={setUser}
+        />
+      )}
+
+      {view === 'login' && (
+        <UsersList
+        setUser={setUser}
+        setView={setView}
+        />
+      )}
+
+      {view === 'settings' && <Settings setView={setView} />}
+
+      {user && <p>Hola, {user.name}</p>}
     </div>
   )
 }

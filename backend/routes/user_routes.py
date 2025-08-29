@@ -28,5 +28,6 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
 def create_user(user_data: UserCreate, db: Session = Depends(get_db)):
     user = UserMainController(db).create_user(user_data.name)
     if user:
+        print(user)
         return user
     raise HTTPException(status_code=400, detail="User already exists")
