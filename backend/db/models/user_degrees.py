@@ -1,5 +1,5 @@
-from sqlalchemy import Column, Integer, ForeignKey, Table
-from ..base import Base
+from sqlalchemy import Column, Integer, ForeignKey
+from backend.db.base import Base
 
 class UserDegrees(Base):
     __tablename__ = "user_degrees"

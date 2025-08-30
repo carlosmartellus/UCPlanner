@@ -7,7 +7,9 @@ function User({
   schoolInput,
   setSchoolInput,
   creditInput,
-  setCreditInput
+  setCreditInput,
+  setAppView,
+  setDegree
 }) {
   const [userDegrees, setUserDegrees] = useState([])
 
@@ -62,7 +64,8 @@ function User({
   }
 
   const handleDegreeClick = (degree) => {
-    alert(`Carrera seleccionada: ${degree.name} (${degree.school}) - ${degree.total_credits} créditos`)
+    setDegree(degree)
+    setAppView('degree')
   }
 
   return (

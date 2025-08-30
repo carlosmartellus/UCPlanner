@@ -1,13 +1,9 @@
-import sys
-import os
 from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-from base import Base, engine
-from models import *
+from backend.db.base import Base
+from backend.db.models import *
 
 config = context.config
 if config.config_file_name is not None:
